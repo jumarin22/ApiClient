@@ -14,7 +14,7 @@ namespace ApiClient
         class Status
         {
             [JsonPropertyName("verified")]
-            public bool? Verified { get; set; } // might be True or null
+            public bool? Verified { get; set; } // might be true or null
             [JsonPropertyName("seenCount")]
             public int SeenCount { get; set; }
 
@@ -51,7 +51,6 @@ namespace ApiClient
 #nullable enable
             [JsonPropertyName("status")]
             public Status? Status { get; set; }
-
         }
 
 
@@ -65,9 +64,7 @@ namespace ApiClient
             string animalString = "";
             string amountString = "";
             string httpString;
-
             string userChoice;
-
 
             //Main menu. 
             var keepRunning = true;
@@ -116,6 +113,7 @@ namespace ApiClient
                             break;
                     }
                 }
+
 
                 while (secondChoice)
                 {
