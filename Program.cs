@@ -125,7 +125,7 @@ namespace ApiClient
                     Console.WriteLine($"Here are your {amountString} facts about {animalString}s:");
                     Console.WriteLine();
 
-                    // Originally, amountStrting went at the end of the below httpString and pulled that number of facts at once. 
+                    // Originally, amountString went at the end of the below httpString and pulled that number of facts at once. 
                     // However, if the fact.Status.Verified was null, the fact.Text was usually nonsense, and I don't want to pull such facts. 
                     // So instead, I only pull where fact.Status.Verified != null, and use an in-program counter.
                     // Without the &amount= (or if &amount=1), only one object is pulled instead of a set, so my foreach would not work.
