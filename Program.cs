@@ -135,8 +135,8 @@ namespace ApiClient
 
                     // Note: Some facts are too long to neatly appear in the ConsoleTable, so I ended up not using it.
                     // Maybe I could make a wordwrap feature to the ConsoleTables... 
-                    var factCount = 1;
 
+                    var factCount = 1;
                     while (factCount <= int.Parse(amountString))
                     {
                         var responseAsStream = await client.GetStreamAsync($"{httpString}");
