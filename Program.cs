@@ -10,6 +10,15 @@ namespace ApiClient
 {
     class Program
     {
+
+        class Status
+        {
+            [JsonPropertyName("verified")]
+            public bool? Verified { get; set; } // might be True or null
+            [JsonPropertyName("seenCount")]
+            public int SeenCount { get; set; }
+
+        }
         class Fact
         {
 
@@ -39,6 +48,9 @@ namespace ApiClient
             public DateTime UpdatedAt { get; set; }
             [JsonPropertyName("__v")]
             public int Version { get; set; }
+#nullable enable
+            [JsonPropertyName("status")]
+            public Status? Status { get; set; }
 
         }
 
@@ -113,21 +125,32 @@ namespace ApiClient
                     Console.WriteLine($"Here are your {amountString} facts about {animalString}s:");
                     Console.WriteLine();
 
-                    httpString = $"https://cat-fact.herokuapp.com/facts/random?animal_type={animalString}&amount={amountString}";
+                    // Originally, amountStrting went at the end of the below httpString and pulled that number of facts at once. 
+                    // However, if the fact.Status.Verified was null, the fact.Text was usually nonsense, and I don't want to pull such facts. 
+                    // So instead, I only pull where fact.Status.Verified != null, and use an in-program counter.
+                    // Without the &amount= (or if &amount=1), only one object is pulled instead of a set, so my foreach would not work.
+                    // Leaving the &amount= without a value still pulls a set of only one. 
+                    httpString = $"https://cat-fact.herokuapp.com/facts/random?animal_type={animalString}&amount=";
 
-                    var responseAsStream = await client.GetStreamAsync($"{httpString}");
-                    var facts = await JsonSerializer.DeserializeAsync<List<Fact>>(responseAsStream);
 
-                    // Note: Some facts too long to neatly appear in the ConsoleTable.
+                    // Note: Some facts are too long to neatly appear in the ConsoleTable, so I ended up not using it.
+                    // Maybe I could make a wordwrap feature to the ConsoleTables... 
                     var factCount = 1;
 
-                    foreach (var fact in facts)
+                    while (factCount <= int.Parse(amountString))
                     {
-                        Console.WriteLine($"{factCount}: {fact.Text}");
-                        Console.WriteLine();
-                        factCount++;
+                        var responseAsStream = await client.GetStreamAsync($"{httpString}");
+                        var facts = await JsonSerializer.DeserializeAsync<List<Fact>>(responseAsStream);
+                        foreach (var fact in facts)
+                        {
+                            if (fact.Status.Verified != null)
+                            {
+                                Console.WriteLine($"{factCount}: {fact.Text}");
+                                Console.WriteLine();
+                                factCount++;
+                            }
+                        }
                     }
-
                     secondChoice = false;
                     firstChoice = true;
                 }
@@ -135,3 +158,4 @@ namespace ApiClient
         }
     }
 }
+
